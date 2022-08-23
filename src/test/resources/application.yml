@@ -1,0 +1,11 @@
+
+spring:
+  r2dbc:
+    url: "r2dbc:postgresql://127.0.0.1:5432/bookingdb?currentSchema=testdb"
+    username: "postgres"
+    password: "1234"
+    pool:
+      initial-size: 30
+      max-size: 60
+  profiles:
+    active: "test"
