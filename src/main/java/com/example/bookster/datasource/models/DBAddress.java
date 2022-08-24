@@ -17,8 +17,9 @@ import java.util.UUID;
 @Table(value = "address")
 public class DBAddress {
 
+    public static final String ADDRESS_PK = "pk_address";
     @Id
-    @Column("pk_address")
+    @Column(ADDRESS_PK)
     private UUID id;
     @Column("city")
     private String city;
