@@ -1,7 +1,7 @@
 
 spring:
   r2dbc:
-    url: "r2dbc:postgresql://127.0.0.1:5432/bookingdb?currentSchema=testdb"
+    url: "r2dbc:postgresql://127.0.0.1:5432/bookingdbtest?currentSchema=testdb"
     username: "postgres"
     password: "1234"
     pool:

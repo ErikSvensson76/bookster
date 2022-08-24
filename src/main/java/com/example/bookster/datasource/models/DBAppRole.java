@@ -16,6 +16,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @Table(name = "app_role")
 public class DBAppRole {
+
+    public static final String APP_ROLE_PK = "pk_app_role";
+
     @Id
     @Column("pk_app_role")
     private UUID id;

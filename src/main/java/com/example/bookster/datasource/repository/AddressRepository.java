@@ -9,9 +9,9 @@ import reactor.core.publisher.Flux;
 import java.util.UUID;
 
 public interface AddressRepository extends R2dbcRepository<DBAddress, UUID> {
-    @Query("SELECT a.* FROM address AS a " +
-            "WHERE upper(a.city) = upper(:city) AND " +
-            "upper(a.street) = upper(:street) AND " +
+    @Query("SELECT a.* FROM app_role AS a " +
+            "WHERE lower(a.city) = lower(:city) AND " +
+            "lower(a.street) = lower(:street) AND " +
             "a.zip_code = :zipCode")
     Flux<DBAddress> findByCityAndStreetAndZipCode(
             @Param("city") String city,
