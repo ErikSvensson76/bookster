@@ -16,6 +16,9 @@ import java.util.UUID;
 @Builder
 @Table(name = "app_user")
 public class DBAppUser {
+
+    public static final String APP_USER_PK = "pk_app_user";
+
     @Id
     @Column("pk_app_user")
     private UUID id;
