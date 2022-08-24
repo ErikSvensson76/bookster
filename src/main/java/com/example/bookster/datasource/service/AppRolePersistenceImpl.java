@@ -1,4 +1,4 @@
-package com.example.bookster.datasource;
+package com.example.bookster.datasource.service;
 
 import com.example.bookster.datasource.models.DBAppRole;
 import lombok.RequiredArgsConstructor;
