@@ -16,6 +16,9 @@ import java.util.UUID;
 @Builder
 @Table(name = "contact_info")
 public class DBContactInfo {
+
+    public static final String CONTACT_INFO_PK = "pk_contact_info";
+
     @Id
     @Column("pk_contact_info")
     private UUID id;
