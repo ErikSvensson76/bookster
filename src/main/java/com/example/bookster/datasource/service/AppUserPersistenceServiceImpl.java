@@ -1,6 +1,5 @@
 package com.example.bookster.datasource.service;
 
-import com.example.bookster.datasource.models.DBAppRole;
 import com.example.bookster.datasource.models.DBAppUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.r2dbc.core.DatabaseClient;
@@ -49,7 +48,7 @@ public class AppUserPersistenceServiceImpl implements AppUserPersistenceService 
                 .map(integer -> {
                     if(integer == null || integer == 0) {
                         throw new RuntimeException(
-                                String.format("Failed to update: %1s with id: %2s", DBAppRole.class.getSimpleName(), type.getId().toString()));
+                                String.format("Failed to update: %1s with id: %2s", DBAppUser.class.getSimpleName(), type.getId().toString()));
                     }
                     return type;
                 });
