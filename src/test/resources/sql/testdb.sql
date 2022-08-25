@@ -57,10 +57,8 @@ create table if not exists contact_info
     primary key,
     email           text,
     phone           text,
-    fk_user_address uuid
-    constraint "foreign-key-user-address"
-    references address
-    on delete set null
+    fk_user_address uuid default null REFERENCES address ON DELETE SET DEFAULT
+
     );
 
 alter table contact_info
@@ -79,34 +77,29 @@ create table if not exists patient
     pnr             text
     constraint unique_pnr
     unique,
-    fk_contact_info uuid
-    constraint foreign_key_contact_info
-    references contact_info
-    on delete set null,
-    fk_app_user     uuid
-    constraint foreign_key_user
-    references app_user
-    on update set null on delete set null
+    fk_contact_info uuid default null REFERENCES contact_info ON DELETE SET DEFAULT,
+    fk_app_user     uuid default null REFERENCES app_user ON DELETE SET DEFAULT
     );
 
 alter table patient
     owner to postgres;
 
-create index if not exists fki_k
+create index if not exists fki_foreign_key_contact_info
     on patient (fk_contact_info);
 
 create index if not exists fki_foreign_key_user
     on patient (fk_app_user);
+
 
 create table if not exists premises
 (
     pk_premises         uuid default gen_random_uuid() not null
     primary key,
     premises_name       text,
-    fk_premises_address uuid
-    constraint foreign_key_premises_address
-    references address
+    fk_premises_address uuid default null REFERENCES address ON DELETE SET DEFAULT
     );
+
+
 
 alter table premises
     owner to postgres;
@@ -116,19 +109,19 @@ create index if not exists fki_foreign_key_premises_address
 
 create table if not exists role_app_user
 (
-    fk_app_user uuid not null
-    constraint foreign_key_user
-    references app_user,
-    fk_app_role uuid not null
-    constraint foreign_key_app_role
-    references app_role
+    fk_app_user uuid default null REFERENCES app_user,
+    fk_app_role uuid default null REFERENCES app_role
+
 );
 
 alter table role_app_user
     owner to postgres;
 
-create index if not exists fki_foreign_key_app_role
+create index if not exists fki_foreign_key_app_role_app_user
     on role_app_user (fk_app_role);
+
+create index if not exists fki_foreign_key_app_user_app_role
+    on role_app_user (fk_app_user);
 
 create table if not exists booking
 (
@@ -139,20 +132,16 @@ create table if not exists booking
     price             numeric(19, 2) default 0,
     vacant            boolean        default true,
     "vaccineType"     text,
-    fk_patient        uuid
-    constraint foreign_key_patient
-    references patient,
-    fk_premises       uuid
-    constraint foreign_key_premises
-    references premises
+    fk_patient        uuid default null REFERENCES patient,
+    fk_premises       uuid default null REFERENCES premises
     );
 
 alter table booking
     owner to postgres;
 
-create index if not exists fki_foreign_key_premises
-    on booking (fk_premises);
-
 create index if not exists fki_foreign_key_patient
     on booking (fk_patient);
+
+create index if not exists fki_foreign_key_premises
+    on booking (fk_premises);
 
