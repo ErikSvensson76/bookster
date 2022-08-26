@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @DirtiesContext
-class AppRolePersistenceImplTest {
+class AppRolePersistenceServiceImplTest {
 
     @Value("classpath:/sql/testdb.sql")
     Resource resource;
