@@ -13,7 +13,7 @@ import static com.example.bookster.datasource.models.DBAppRole.APP_ROLE_PK;
 
 @Repository
 @RequiredArgsConstructor
-public class AppRolePersistenceImpl implements AppRolePersistenceService {
+public class AppRolePersistenceServiceImpl implements AppRolePersistenceService {
 
     private final DatabaseClient client;
 

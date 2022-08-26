@@ -1,7 +1,6 @@
 package com.example.bookster.datasource.service;
 
 import com.example.bookster.datasource.models.DBAppRole;
-import com.example.bookster.datasource.service.AppRolePersistenceImpl;
 import io.r2dbc.spi.ConnectionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +28,7 @@ class AppRolePersistenceImplTest {
     ConnectionFactory connectionFactory;
 
     @Autowired
-    AppRolePersistenceImpl testObject;
+    AppRolePersistenceServiceImpl testObject;
 
     DBAppRole dbAppRole = new DBAppRole(null, "APP_USER");
 
