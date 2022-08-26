@@ -29,10 +29,10 @@ public class ContactInfoPersistenceServiceImpl implements ContactInfoPersistence
                     if(dbContactInfo == null) return Mono.empty();
                     if(dbContactInfo.getId() == null){
                         return r2dbc.insert(DBContactInfo.class)
-                                .using(type);
+                                .using(dbContactInfo);
 
                     }
-                    return r2dbc.update(type);
+                    return r2dbc.update(dbContactInfo);
                 });
     }
 
