@@ -127,11 +127,11 @@ create table if not exists booking
 (
     pk_booking        uuid           default gen_random_uuid() not null
     primary key,
-    "administratorId" text,
+    administrator_id  text,
     date_time         timestamp,
     price             numeric(19, 2) default 0,
     vacant            boolean        default true,
-    "vaccineType"     text,
+    vaccine_type       text,
     fk_patient        uuid default null REFERENCES patient,
     fk_premises       uuid default null REFERENCES premises
     );

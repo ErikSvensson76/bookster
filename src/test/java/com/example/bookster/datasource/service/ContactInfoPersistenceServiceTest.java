@@ -19,14 +19,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @DirtiesContext
-class ContactInfoPersistenceServiceImplTest {
+class ContactInfoPersistenceServiceTest {
 
     @Value("classpath:/sql/testdb.sql")
     Resource resource;
     @Autowired
     AddressPersistenceService addressService;
     @Autowired
-    ContactInfoPersistenceServiceImpl testObject;
+    ContactInfoPersistenceService testObject;
     @Autowired
     ConnectionFactory connectionFactory;
 
@@ -87,40 +87,8 @@ class ContactInfoPersistenceServiceImplTest {
     void delete() {
         var toDelete = testObject.save(contactInfo).block();
         assertThat(toDelete).isNotNull();
-
         Integer expected = 1;
         Integer actual = testObject.delete(toDelete.getId()).block();
-        assertThat(actual).isEqualTo(expected);
-
-    }
-
-    @Test
-    void setAddressRelation() {
-        var details = testObject.save(contactInfo).block();
-        var address = addressService.save(dbAddress).block();
-        assertThat(details).isNotNull();
-        assertThat(address).isNotNull();
-
-        Integer expected = 1;
-        Integer actual = testObject.setAddressRelation(details.getId(), address.getId()).block();
-
-        assertThat(actual).isEqualTo(expected);
-
-    }
-
-    @Test
-    void removeAddressRelation() {
-        var details = testObject.save(contactInfo).block();
-        var address = addressService.save(dbAddress).block();
-        assertThat(details).isNotNull();
-        assertThat(address).isNotNull();
-
-
-        Integer rows = testObject.setAddressRelation(details.getId(), address.getId()).block();
-        assertThat(rows).isEqualTo(1);
-
-        Integer expected = 1;
-        Integer actual = testObject.removeAddressRelation(details.getId(), address.getId()).block();
         assertThat(actual).isEqualTo(expected);
     }
 }

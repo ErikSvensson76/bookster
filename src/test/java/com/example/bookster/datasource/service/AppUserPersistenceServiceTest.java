@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @DirtiesContext
-class AppUserPersistenceServiceImplTest {
+class AppUserPersistenceServiceTest {
 
     @Value("classpath:/sql/testdb.sql")
     Resource resource;
@@ -25,7 +25,7 @@ class AppUserPersistenceServiceImplTest {
     ConnectionFactory connectionFactory;
 
     @Autowired
-    AppUserPersistenceServiceImpl testObject;
+    AppUserPersistenceService testObject;
 
     private final DBAppUser dbAppUser = DBAppUser.builder()
             .username("test")

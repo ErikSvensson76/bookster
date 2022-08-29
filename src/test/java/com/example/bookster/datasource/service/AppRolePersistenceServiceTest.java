@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @DirtiesContext
-class AppRolePersistenceServiceImplTest {
+class AppRolePersistenceServiceTest {
 
     @Value("classpath:/sql/testdb.sql")
     Resource resource;
@@ -28,7 +28,7 @@ class AppRolePersistenceServiceImplTest {
     ConnectionFactory connectionFactory;
 
     @Autowired
-    AppRolePersistenceServiceImpl testObject;
+    AppRolePersistenceService testObject;
 
     DBAppRole dbAppRole = new DBAppRole(null, "APP_USER");
 

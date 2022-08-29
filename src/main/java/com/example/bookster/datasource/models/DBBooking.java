@@ -21,7 +21,7 @@ public class DBBooking {
     @Id
     @Column("pk_booking")
     private UUID id;
-    @Column("administratorId")
+    @Column("administrator_id")
     private String administratorId;
     @Column("date_time")
     private LocalDateTime dateTime;
@@ -29,7 +29,7 @@ public class DBBooking {
     private BigDecimal price;
     @Column("vacant")
     private Boolean vacant = true;
-    @Column("vaccineType")
+    @Column("vaccine_type")
     private String vaccineType;
     @Column("fk_patient")
     private UUID patientId;

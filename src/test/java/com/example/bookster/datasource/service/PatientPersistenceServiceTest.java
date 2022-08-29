@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @DirtiesContext
-class PatientPersistenceServiceImplTest {
+class PatientPersistenceServiceTest {
 
     @Value("classpath:/sql/testdb.sql")
     Resource resource;
@@ -35,7 +35,7 @@ class PatientPersistenceServiceImplTest {
     AppUserPersistenceService appUserPersistenceService;
 
     @Autowired
-    PatientPersistenceServiceImpl testObject;
+    PatientPersistenceService testObject;
 
     DBPatient patient = DBPatient.builder()
             .pnr("123")

@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @DirtiesContext
-class AddressPersistenceServiceImplTest {
+class AddressPersistenceServiceTest {
 
     @Value("classpath:/sql/testdb.sql")
     Resource resource;
@@ -25,7 +25,7 @@ class AddressPersistenceServiceImplTest {
     ConnectionFactory connectionFactory;
 
     @Autowired
-    AddressPersistenceServiceImpl testObject;
+    AddressPersistenceService testObject;
     private final DBAddress address = DBAddress.builder()
             .city("Växjö")
                 .zipCode("352 63")
