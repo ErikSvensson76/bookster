@@ -1,4 +1,4 @@
-package com.example.bookster.datasource.service.persistence.generic;
+package com.example.bookster.datasource.service.generic;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.Id;

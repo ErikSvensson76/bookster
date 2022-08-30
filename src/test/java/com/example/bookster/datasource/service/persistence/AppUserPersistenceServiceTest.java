@@ -1,7 +1,6 @@
 package com.example.bookster.datasource.service.persistence;
 
 import com.example.bookster.datasource.models.DBAppUser;
-import com.example.bookster.datasource.service.persistence.persistence.AppUserPersistenceService;
 import io.r2dbc.spi.ConnectionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

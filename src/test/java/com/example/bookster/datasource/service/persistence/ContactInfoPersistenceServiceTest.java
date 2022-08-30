@@ -2,8 +2,6 @@ package com.example.bookster.datasource.service.persistence;
 
 import com.example.bookster.datasource.models.DBAddress;
 import com.example.bookster.datasource.models.DBContactInfo;
-import com.example.bookster.datasource.service.persistence.persistence.AddressPersistenceService;
-import com.example.bookster.datasource.service.persistence.persistence.ContactInfoPersistenceService;
 import io.r2dbc.spi.ConnectionFactory;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
