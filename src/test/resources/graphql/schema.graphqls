@@ -1,0 +1,62 @@
+scalar DateTime
+scalar Date
+scalar GraphQLBigDecimal
+
+type Address {
+    id: ID
+    city: String
+    street: String
+    zipCode: String
+}
+
+type AppUser {
+    id: String
+    username: String
+    roles: [AppRole]
+}
+
+type AppRole {
+    id: ID
+    userRole: String
+    members: [AppUser]
+}
+
+type ContactInfo {
+    id: ID
+    email: String
+    phone: String
+    address: Address
+}
+
+type Booking {
+    id: ID
+    administratorId: String
+    dateTime: DateTime
+    price: GraphQLBigDecimal
+    vacant: Boolean
+    vaccineType: String
+    patient: Patient
+    premises: Premises
+}
+
+type Patient {
+    id: ID
+    birthDate: Date
+    firstName: String
+    lastName: String
+    pnr: String
+    contactInfo: ContactInfo
+    appUser: AppUser
+    bookings: [Booking]
+}
+
+type Premises {
+    id: ID
+    premisesName: String
+    address: Address
+    bookings: [Booking]
+}
+
+
+
+
