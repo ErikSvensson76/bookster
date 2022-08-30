@@ -12,8 +12,7 @@ public class ScalarConfig {
     public RuntimeWiringConfigurer runtimeWiringConfigurer(){
         return wiringBuilder -> wiringBuilder
                 .scalar(ExtendedScalars.Date)
-                .scalar(ExtendedScalars.DateTime)
-                .scalar(ExtendedScalars.GraphQLBigDecimal);
+                .scalar(ExtendedScalars.DateTime);
     }
 
 }
