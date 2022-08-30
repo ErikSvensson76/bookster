@@ -9,9 +9,9 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 public interface ContactInfoRepository extends R2dbcRepository<DBContactInfo, UUID> {
-    @Query("SELECT ci FROM contact_info ci " +
+    @Query("SELECT ci.* FROM contact_info ci " +
             "JOIN patient p ON ci.pk_contact_info = p.fk_contact_info " +
             "WHERE p.pk_patient = :patientId")
-    Mono<DBContactInfo> findByPatientId(@Param("patientId") UUID patientId);
+    Mono<DBContactInfo> findByContactInfoByPatientId(@Param("patientId") UUID patientId);
     
 }

@@ -45,13 +45,13 @@ class ContactInfoRepositoryTest {
     }
 
     @Test
-    void findByPatientId() {
+    void findByContactInfoByPatientId() {
         assertThat(contactInfo).isNotNull();
         DBPatient patient = DBPatient.builder().contactInfoId(contactInfo.getId()).build();
         patient = template.insert(DBPatient.class).using(patient).block();
         assertThat(patient).isNotNull();
 
-        StepVerifier.create(testObject.findByPatientId(patient.getId()))
+        StepVerifier.create(testObject.findByContactInfoByPatientId(patient.getId()))
                 .expectNextMatches(ci -> ci.getId().equals(contactInfo.getId()))
                 .verifyComplete();
     }
