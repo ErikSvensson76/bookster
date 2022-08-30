@@ -1,9 +1,13 @@
-package com.example.bookster.datasource.service;
+package com.example.bookster.datasource.service.persistence;
 
 import com.example.bookster.datasource.models.DBBooking;
 import com.example.bookster.datasource.models.DBPatient;
 import com.example.bookster.datasource.models.DBPremises;
+import com.example.bookster.datasource.service.persistence.persistence.BookingPersistenceService;
+import com.example.bookster.datasource.service.persistence.persistence.PatientPersistenceService;
+import com.example.bookster.datasource.service.persistence.persistence.PremisesPersistenceService;
 import io.r2dbc.spi.ConnectionFactory;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +63,7 @@ class BookingPersistenceServiceTest {
     void save_persist() {
         var premises = DBPremises.builder().premisesName("Vårdcentralen Test").build();
         var persistedPremises = premisesPersistenceService.save(premises).block();
-        assertThat(persistedPremises).isNotNull();
+        Assertions.assertThat(persistedPremises).isNotNull();
 
         dbBooking.setPremisesId(persistedPremises.getId());
 
@@ -80,7 +84,7 @@ class BookingPersistenceServiceTest {
     void save_update() {
         var premises = DBPremises.builder().premisesName("Vårdcentralen Test").build();
         var persistedPremises = premisesPersistenceService.save(premises).block();
-        assertThat(persistedPremises).isNotNull();
+        Assertions.assertThat(persistedPremises).isNotNull();
         dbBooking.setPremisesId(persistedPremises.getId());
 
         var booking = testObject.save(dbBooking).block();
@@ -94,7 +98,7 @@ class BookingPersistenceServiceTest {
                 .build();
 
         var persistedPatient = patientPersistenceService.save(patient).block();
-        assertThat(persistedPatient).isNotNull();
+        Assertions.assertThat(persistedPatient).isNotNull();
 
         var updatedBooking = DBBooking.builder()
                 .id(booking.getId())

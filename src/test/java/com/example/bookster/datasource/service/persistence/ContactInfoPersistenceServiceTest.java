@@ -1,8 +1,11 @@
-package com.example.bookster.datasource.service;
+package com.example.bookster.datasource.service.persistence;
 
 import com.example.bookster.datasource.models.DBAddress;
 import com.example.bookster.datasource.models.DBContactInfo;
+import com.example.bookster.datasource.service.persistence.persistence.AddressPersistenceService;
+import com.example.bookster.datasource.service.persistence.persistence.ContactInfoPersistenceService;
 import io.r2dbc.spi.ConnectionFactory;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,21 +51,21 @@ class ContactInfoPersistenceServiceTest {
     void save_persist() {
         var result = testObject.save(contactInfo).block();
 
-        assertThat(result).isNotNull();
-        assertThat(result.getId()).isNotNull();
-        assertThat(result.getPhone()).isEqualTo(contactInfo.getPhone());
-        assertThat(result.getEmail()).isEqualTo(contactInfo.getEmail());
-        assertThat(result.getAddressId()).isNull();
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getId()).isNotNull();
+        Assertions.assertThat(result.getPhone()).isEqualTo(contactInfo.getPhone());
+        Assertions.assertThat(result.getEmail()).isEqualTo(contactInfo.getEmail());
+        Assertions.assertThat(result.getAddressId()).isNull();
     }
 
     @Test
     void save_update() {
         var toUpdate = testObject.save(contactInfo).block();
-        assertThat(toUpdate).isNotNull();
+        Assertions.assertThat(toUpdate).isNotNull();
 
         var address = addressService
                 .save(dbAddress).block();
-        assertThat(address).isNotNull();
+        Assertions.assertThat(address).isNotNull();
 
         String phone = "0702345678";
         String email = "test2@gmail.com";
@@ -76,17 +79,17 @@ class ContactInfoPersistenceServiceTest {
                 .build();
 
         var result = testObject.save(updatedObject).block();
-        assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo(toUpdate.getId());
-        assertThat(result.getPhone()).isEqualTo(phone);
-        assertThat(result.getEmail()).isEqualTo(email);
-        assertThat(result.getAddressId()).isEqualTo(addressId);
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getId()).isEqualTo(toUpdate.getId());
+        Assertions.assertThat(result.getPhone()).isEqualTo(phone);
+        Assertions.assertThat(result.getEmail()).isEqualTo(email);
+        Assertions.assertThat(result.getAddressId()).isEqualTo(addressId);
     }
 
     @Test
     void delete() {
         var toDelete = testObject.save(contactInfo).block();
-        assertThat(toDelete).isNotNull();
+        Assertions.assertThat(toDelete).isNotNull();
         Integer expected = 1;
         Integer actual = testObject.delete(toDelete.getId()).block();
         assertThat(actual).isEqualTo(expected);

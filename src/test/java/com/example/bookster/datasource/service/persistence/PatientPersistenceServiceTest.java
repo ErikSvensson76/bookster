@@ -1,9 +1,13 @@
-package com.example.bookster.datasource.service;
+package com.example.bookster.datasource.service.persistence;
 
 import com.example.bookster.datasource.models.DBAppUser;
 import com.example.bookster.datasource.models.DBContactInfo;
 import com.example.bookster.datasource.models.DBPatient;
+import com.example.bookster.datasource.service.persistence.persistence.AppUserPersistenceService;
+import com.example.bookster.datasource.service.persistence.persistence.ContactInfoPersistenceService;
+import com.example.bookster.datasource.service.persistence.persistence.PatientPersistenceService;
 import io.r2dbc.spi.ConnectionFactory;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,14 +59,14 @@ class PatientPersistenceServiceTest {
     void testSave() {
         var result = testObject.save(patient).block();
 
-        assertThat(result).isNotNull();
-        assertThat(result.getId()).isNotNull();
-        assertThat(result.getPnr()).isEqualTo(patient.getPnr());
-        assertThat(result.getBirthDate()).isEqualTo(patient.getBirthDate());
-        assertThat(result.getFirstName()).isEqualTo(patient.getFirstName());
-        assertThat(result.getLastName()).isEqualTo(patient.getLastName());
-        assertThat(result.getContactInfoId()).isNull();
-        assertThat(result.getAppUserId()).isNull();
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getId()).isNotNull();
+        Assertions.assertThat(result.getPnr()).isEqualTo(patient.getPnr());
+        Assertions.assertThat(result.getBirthDate()).isEqualTo(patient.getBirthDate());
+        Assertions.assertThat(result.getFirstName()).isEqualTo(patient.getFirstName());
+        Assertions.assertThat(result.getLastName()).isEqualTo(patient.getLastName());
+        Assertions.assertThat(result.getContactInfoId()).isNull();
+        Assertions.assertThat(result.getAppUserId()).isNull();
     }
 
     @Test
@@ -74,7 +78,7 @@ class PatientPersistenceServiceTest {
         appUser = appUserPersistenceService.save(appUser).block();
         contactInfo = contactInfoPersistenceService.save(contactInfo).block();
 
-        assertThat(persistedPatient).isNotNull();
+        Assertions.assertThat(persistedPatient).isNotNull();
         assertThat(appUser).isNotNull();
         assertThat(contactInfo).isNotNull();
 
@@ -90,19 +94,19 @@ class PatientPersistenceServiceTest {
 
         var result = testObject.save(updatedPayload).block();
 
-        assertThat(result).isNotNull();
-        assertThat(result.getAppUserId()).isEqualTo(appUser.getId());
-        assertThat(result.getContactInfoId()).isEqualTo(contactInfo.getId());
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getAppUserId()).isEqualTo(appUser.getId());
+        Assertions.assertThat(result.getContactInfoId()).isEqualTo(contactInfo.getId());
     }
 
     @Test
     void delete() {
         var result = testObject.save(patient).block();
 
-        assertThat(result).isNotNull();
-        assertThat(result.getId()).isNotNull();
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getId()).isNotNull();
 
         var rows = testObject.delete(result.getId()).block();
-        assertThat(rows).isEqualTo(1);
+        Assertions.assertThat(rows).isEqualTo(1);
     }
 }

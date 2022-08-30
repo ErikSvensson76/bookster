@@ -1,7 +1,7 @@
-package com.example.bookster.datasource.service;
+package com.example.bookster.datasource.service.persistence.persistence;
 
 import com.example.bookster.datasource.models.DBPremises;
-import com.example.bookster.datasource.service.generic.GenericR2DBCService;
+import com.example.bookster.datasource.service.persistence.generic.GenericR2DBCService;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.stereotype.Repository;
 
