@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class AddressServiceImpl implements AddressService {
@@ -33,18 +35,21 @@ public class AddressServiceImpl implements AddressService {
     @Override
     @Transactional(readOnly = true)
     public Mono<Address> findById(Mono<String> idMono) {
-        return null;
+        return repository.findById(idMono.map(UUID::fromString))
+                .map(mappingService::convert);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Flux<Address> findAll() {
-        return null;
+        return repository.findAll()
+                .map(mappingService::convert);
+
     }
 
     @Override
-    public Mono<Integer> delete(String s) {
-        return null;
+    public Mono<Integer> delete(String id) {
+        return persistenceService.delete(UUID.fromString(id));
     }
 
     @Transactional
