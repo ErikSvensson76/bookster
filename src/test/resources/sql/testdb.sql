@@ -109,8 +109,8 @@ create index if not exists fki_foreign_key_premises_address
 
 create table if not exists role_app_user
 (
-    fk_app_user uuid default null REFERENCES app_user,
-    fk_app_role uuid default null REFERENCES app_role
+    fk_app_user uuid default null REFERENCES app_user ON DELETE SET DEFAULT,
+    fk_app_role uuid default null REFERENCES app_role ON DELETE SET DEFAULT
 
 );
 

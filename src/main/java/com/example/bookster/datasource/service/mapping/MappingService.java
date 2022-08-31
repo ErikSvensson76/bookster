@@ -15,6 +15,8 @@ public interface MappingService {
 
     AppUser convert(DBAppUser dbAppUser);
 
+    DBAppUser convert(AppUserInput appUserInput);
+
     Booking convert(DBBooking dbBooking);
 
     DBBooking convert(BookingInput bookingInput);

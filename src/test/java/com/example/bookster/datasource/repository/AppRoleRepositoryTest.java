@@ -63,8 +63,9 @@ class AppRoleRepositoryTest {
     @Test
     void findByUserRole() {
         var appRole = testObject.save(dbAppRole).block();
+        assertThat(appRole).isNotNull();
 
-        testObject.findByUserRole(dbAppRole.getUserRole())
+        testObject.findByUserRole(appRole.getUserRole())
                 .subscribe(result -> {
                     assertThat(result).isNotNull();
                     assertThat(result.getUserRole()).isEqualTo(ROLE_APP_USER);

@@ -59,12 +59,15 @@ public class AddressServiceImpl implements AddressService {
         return addressMono
                 .flatMap(address -> Mono.from(repository.findByCityAndStreetAndZipCode(address.getCity(), address.getStreet(), address.getZipCode()))
                         .flatMap(result -> {
+                            Mono<DBAddress> dbAddressMono;
+                            DBAddress dbAddress;
                             if(result == null){
-                                 DBAddress dbAddress = new DBAddress(null, address.getCity(), address.getStreet(), address.getZipCode());
-                                 return Mono.from(persistenceService.save(dbAddress));
+                                 dbAddress = new DBAddress(null, address.getCity(), address.getStreet(), address.getZipCode());
+                                 dbAddressMono = Mono.from(persistenceService.save(dbAddress));
                             }else {
-                                return Mono.just(result);
+                                dbAddressMono = Mono.just(result);
                             }
+                            return dbAddressMono;
                         })
                 );
     }

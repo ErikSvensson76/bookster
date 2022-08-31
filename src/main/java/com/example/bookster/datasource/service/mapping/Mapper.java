@@ -86,6 +86,19 @@ public class Mapper implements MappingService {
     }
 
     @Override
+    public DBAppUser convert(AppUserInput appUserInput) {
+        DBAppUser dbAppUser = null;
+        if(Objects.nonNull(appUserInput)){
+            dbAppUser = DBAppUser.builder()
+                    .id(convert(appUserInput.id()))
+                    .password(appUserInput.password())
+                    .username(appUserInput.username())
+                    .build();
+        }
+        return dbAppUser;
+    }
+
+    @Override
     public Booking convert(DBBooking dbBooking){
         Booking booking = null;
         if(Objects.nonNull(dbBooking)){
