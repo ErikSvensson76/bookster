@@ -20,16 +20,15 @@ public class AddressServiceImpl implements AddressService {
     private final AddressPersistenceService persistenceService;
     private final MappingService mappingService;
 
-
     @Override
     @Transactional
     public Mono<Address> save(Mono<AddressInput> addressMono) {
         return addressMono.map(mappingService::convert)
-                .flatMap(address -> {
-
-                    return Mono.empty();
-                });
+                .flatMap(address -> process(Mono.just(address)))
+                .map(mappingService::convert);
     }
+
+
 
     @Override
     @Transactional(readOnly = true)
@@ -48,11 +47,18 @@ public class AddressServiceImpl implements AddressService {
         return null;
     }
 
-    public Mono<DBAddress> update(Mono<DBAddress> addressMono){
-        return Mono.empty();
-    }
-
-    public Mono<DBAddress> create(Mono<DBAddress> addressMono){
-        return Mono.empty();
+    @Transactional
+    public Mono<DBAddress> process(Mono<DBAddress> addressMono){
+        return addressMono
+                .flatMap(address -> Mono.from(repository.findByCityAndStreetAndZipCode(address.getCity(), address.getStreet(), address.getZipCode()))
+                        .flatMap(result -> {
+                            if(result == null){
+                                 DBAddress dbAddress = new DBAddress(null, address.getCity(), address.getStreet(), address.getZipCode());
+                                 return Mono.from(persistenceService.save(dbAddress));
+                            }else {
+                                return Mono.just(result);
+                            }
+                        })
+                );
     }
 }
