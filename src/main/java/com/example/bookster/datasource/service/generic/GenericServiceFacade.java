@@ -7,5 +7,5 @@ public interface GenericServiceFacade <INPUT, OUTPUT, ID>{
     Mono<OUTPUT> save(Mono<INPUT> t);
     Mono<OUTPUT> findById(Mono<ID> id);
     Flux<OUTPUT> findAll();
-    Mono<Integer> delete(ID id);
+    Mono<Integer> delete(Mono<ID> id);
 }

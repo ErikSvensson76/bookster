@@ -48,8 +48,10 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public Mono<Integer> delete(String id) {
-        return persistenceService.delete(UUID.fromString(id));
+    @Transactional
+    public Mono<Integer> delete(Mono<String> stringMono) {
+        return stringMono.map(UUID::fromString)
+                .flatMap(persistenceService::delete);
     }
 
     @Transactional
