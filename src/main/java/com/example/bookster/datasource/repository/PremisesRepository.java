@@ -15,4 +15,7 @@ public interface PremisesRepository extends R2dbcRepository<DBPremises, UUID> {
             "WHERE b.pk_booking = :bookingId")
     Mono<DBPremises> findByBookingId(@Param("bookingId") UUID bookingId);
 
+    @Query("SELECT count(fk_premises_address) FROM premises WHERE fk_premises_address = :addressId")
+    Mono<Integer> countAllByAddressId(@Param("addressId") Mono<UUID> addressId);
+
 }

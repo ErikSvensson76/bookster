@@ -8,10 +8,23 @@ type Address {
     zipCode: String
 }
 
+input AddressInput {
+    id: String
+    city: String!
+    street: String!
+    zipCode: String!
+}
+
 type AppUser {
     id: String
     username: String
     roles: [AppRole]
+}
+
+input AppUserInput {
+    id: String
+    username: String!
+    password: String!
 }
 
 type AppRole {
@@ -20,11 +33,23 @@ type AppRole {
     members: [AppUser]
 }
 
+input AppRoleInput{
+    id: String
+    userRole: String!
+}
+
 type ContactInfo {
     id: ID
     email: String
     phone: String
     address: Address
+}
+
+input ContactInfoInput {
+    id: String
+    email: String!
+    phone: String!
+    address: AddressInput!
 }
 
 type Booking {
@@ -38,15 +63,37 @@ type Booking {
     premises: Premises
 }
 
+input BookingInput {
+    id: String
+    administratorId: String
+    dateTime: DateTime!
+    price: Float!
+    vacant: Boolean
+    vaccineType: String!
+    patientId: String
+    premisesId: String!
+}
+
 type Patient {
     id: ID
     birthDate: Date
     firstName: String
     lastName: String
     pnr: String
+    age: Int
     contactInfo: ContactInfo
     appUser: AppUser
     bookings: [Booking]
+}
+
+input PatientInput {
+    id: String
+    birthDate: DateTime!
+    firstName: String!
+    lastName: String!
+    pnr: String!
+    appUser: AppUserInput!
+    contactInfo: ContactInfoInput!
 }
 
 type Premises {
@@ -54,6 +101,17 @@ type Premises {
     premisesName: String
     address: Address
     bookings: [Booking]
+}
+
+input PremisesInput {
+    id: String
+    premisesName: String!
+    address: AddressInput!
+}
+
+input RoleAppUserInput {
+    appUserId: String
+    appRoleId: String
 }
 
 type Query {

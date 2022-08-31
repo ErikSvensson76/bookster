@@ -26,4 +26,6 @@ public interface AddressRepository extends R2dbcRepository<DBAddress, UUID> {
             @Param("street") String street,
             @Param("zipCode") String zipCode
     );
+
+
 }
