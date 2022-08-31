@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public record AppRoleInput(
         String id,
-        String userRole,
-        String password
+        String userRole
+
 ) implements Serializable {
 }
