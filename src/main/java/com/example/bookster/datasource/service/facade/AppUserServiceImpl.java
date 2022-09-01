@@ -3,7 +3,6 @@ package com.example.bookster.datasource.service.facade;
 import com.example.bookster.datasource.models.DBRoleAppUser;
 import com.example.bookster.datasource.repository.AppUserRepository;
 import com.example.bookster.datasource.service.mapping.MappingService;
-import com.example.bookster.datasource.service.persistence.AppUserPersistenceService;
 import com.example.bookster.datasource.service.persistence.RoleAppUserPersistenceService;
 import com.example.bookster.graphql.models.dto.AppUser;
 import com.example.bookster.graphql.models.input.AppUserInput;
@@ -21,7 +20,6 @@ public class AppUserServiceImpl implements AppUserService {
 
     private final AppUserRepository repository;
     private final MappingService mappingService;
-    private final AppUserPersistenceService persistenceService;
     private final AppRoleService appRoleService;
     private final RoleAppUserPersistenceService roleAppUserPersistenceService;
 
@@ -30,13 +28,13 @@ public class AppUserServiceImpl implements AppUserService {
         return appUserInputMono.map(mappingService::convert)
                 .flatMap(dbAppUser -> {
                     if(dbAppUser.getId() == null){
-                        return persistenceService.save(dbAppUser);
+                        return repository.save(dbAppUser);
                     }else{
                         return Mono.from(repository.findById(dbAppUser.getId()))
                                 .flatMap(result -> {
                                     result.setPassword(dbAppUser.getPassword());
                                     result.setUsername(dbAppUser.getUsername());
-                                    return persistenceService.save(result);
+                                    return repository.save(result);
                                 });
                     }
 
@@ -70,7 +68,7 @@ public class AppUserServiceImpl implements AppUserService {
                             .map(appRoleId -> new DBRoleAppUser(appUserId, appRoleId))
                             .flatMap(roleAppUserPersistenceService::deleteAppRoleAssignment)
                             .reduce(0, Integer::sum);
-                    var appUserDeleteCount = persistenceService.delete(appUserId);
+                    var appUserDeleteCount = repository.deleteDBAppUserById(appUserId);
 
                     return Mono.zip(roleAppUserRowsDeletedCount, appUserDeleteCount)
                             .map(result -> result.getT1() + result.getT2());

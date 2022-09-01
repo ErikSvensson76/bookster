@@ -1,6 +1,7 @@
 package com.example.bookster.datasource.repository;
 
 import com.example.bookster.datasource.models.DBAppRole;
+import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.data.repository.query.Param;
@@ -18,4 +19,7 @@ public interface AppRoleRepository extends R2dbcRepository<DBAppRole, UUID> {
     Flux<DBAppRole> findByAppUserId(@Param("userId") UUID userId);
 
     Mono<DBAppRole> findByUserRole(String userRole);
+
+    @Modifying
+    Mono<Integer> deleteDBAppRoleById(UUID id);
 }

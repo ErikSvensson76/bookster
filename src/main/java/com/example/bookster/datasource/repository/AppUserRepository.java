@@ -1,6 +1,7 @@
 package com.example.bookster.datasource.repository;
 
 import com.example.bookster.datasource.models.DBAppUser;
+import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.data.repository.query.Param;
@@ -20,4 +21,10 @@ public interface AppUserRepository extends R2dbcRepository<DBAppUser, UUID> {
             "JOIN patient p ON au.pk_app_user = p.fk_app_user " +
             "WHERE p.pk_patient = :patientId")
     Mono<DBAppUser> findByPatientId(@Param("patientId") UUID patientId);
+
+    @Query("SELECT u.* FROM app_user u WHERE lower(u.username) = lower(:username)")
+    Mono<DBAppUser> findByUsername(@Param("username") String username);
+
+    @Modifying
+    Mono<Integer> deleteDBAppUserById(UUID id);
 }

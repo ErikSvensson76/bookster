@@ -3,7 +3,6 @@ package com.example.bookster.datasource.service.facade;
 import com.example.bookster.datasource.models.DBAddress;
 import com.example.bookster.datasource.repository.AddressRepository;
 import com.example.bookster.datasource.service.mapping.MappingService;
-import com.example.bookster.datasource.service.persistence.AddressPersistenceService;
 import com.example.bookster.graphql.models.dto.Address;
 import com.example.bookster.graphql.models.input.AddressInput;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,6 @@ import java.util.UUID;
 public class AddressServiceImpl implements AddressService {
 
     private final AddressRepository repository;
-    private final AddressPersistenceService persistenceService;
     private final MappingService mappingService;
 
     @Override
@@ -51,7 +49,7 @@ public class AddressServiceImpl implements AddressService {
     @Transactional
     public Mono<Integer> delete(Mono<String> stringMono) {
         return stringMono.map(UUID::fromString)
-                .flatMap(persistenceService::delete);
+                .flatMap(repository::deleteDBAddressById);
     }
 
     @Transactional
@@ -63,7 +61,7 @@ public class AddressServiceImpl implements AddressService {
                             DBAddress dbAddress;
                             if(result == null){
                                  dbAddress = new DBAddress(null, address.getCity(), address.getStreet(), address.getZipCode());
-                                 dbAddressMono = Mono.from(persistenceService.save(dbAddress));
+                                 dbAddressMono = Mono.from(repository.save(dbAddress));
                             }else {
                                 dbAddressMono = Mono.just(result);
                             }

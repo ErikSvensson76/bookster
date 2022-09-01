@@ -2,7 +2,6 @@ package com.example.bookster.datasource.service.facade;
 
 import com.example.bookster.datasource.repository.AppRoleRepository;
 import com.example.bookster.datasource.service.mapping.MappingService;
-import com.example.bookster.datasource.service.persistence.AppRolePersistenceService;
 import com.example.bookster.graphql.models.dto.AppRole;
 import com.example.bookster.graphql.models.input.AppRoleInput;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +18,7 @@ public class AppRoleServiceImpl implements AppRoleService {
 
     private final AppRoleRepository repository;
     private final MappingService mappingService;
-
-    private final AppRolePersistenceService persistenceService;
+    private final AppRoleRepository appRoleRepository;
 
     @Override
     @Transactional
@@ -29,13 +27,13 @@ public class AppRoleServiceImpl implements AppRoleService {
                 .flatMap(dbAppRole -> {
                     if(dbAppRole.getId() == null){
                         return Mono.just(dbAppRole)
-                                .flatMap(persistenceService::save)
+                                .flatMap(appRoleRepository::save)
                                 .map(mappingService::convert);
                     }
                     return Mono.from(repository.findById(dbAppRole.getId()))
                             .flatMap(original -> {
                                 original.setUserRole(dbAppRole.getUserRole());
-                                return persistenceService.save(original);
+                                return appRoleRepository.save(original);
                             })
                             .map(mappingService::convert);
                 });
@@ -60,7 +58,7 @@ public class AppRoleServiceImpl implements AppRoleService {
     @Transactional
     public Mono<Integer> delete(Mono<String> stringMono) {
         return  stringMono.map(UUID::fromString)
-                .flatMap(persistenceService::delete);
+                .flatMap(appRoleRepository::deleteDBAppRoleById);
     }
 
     @Override

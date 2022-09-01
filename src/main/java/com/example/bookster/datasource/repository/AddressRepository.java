@@ -1,6 +1,7 @@
 package com.example.bookster.datasource.repository;
 
 import com.example.bookster.datasource.models.DBAddress;
+import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.data.repository.query.Param;
@@ -25,6 +26,9 @@ public interface AddressRepository extends R2dbcRepository<DBAddress, UUID> {
             @Param("street") String street,
             @Param("zipCode") String zipCode
     );
+
+    @Modifying
+    Mono<Integer> deleteDBAddressById(UUID id);
 
 
 }

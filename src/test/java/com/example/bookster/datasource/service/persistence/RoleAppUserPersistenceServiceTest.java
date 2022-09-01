@@ -3,6 +3,8 @@ package com.example.bookster.datasource.service.persistence;
 import com.example.bookster.datasource.models.DBAppRole;
 import com.example.bookster.datasource.models.DBAppUser;
 import com.example.bookster.datasource.models.DBRoleAppUser;
+import com.example.bookster.datasource.repository.AppRoleRepository;
+import com.example.bookster.datasource.repository.AppUserRepository;
 import io.r2dbc.spi.ConnectionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,10 +32,10 @@ class RoleAppUserPersistenceServiceTest {
     RoleAppUserPersistenceService testObject;
 
     @Autowired
-    AppRolePersistenceService appRolePersistenceService;
+    AppRoleRepository appRoleRepository;
 
     @Autowired
-    AppUserPersistenceService appUserPersistenceService;
+    AppUserRepository appUserRepository;
 
     @BeforeEach
     void setUp() {
@@ -47,8 +49,8 @@ class RoleAppUserPersistenceServiceTest {
         var appUser = DBAppUser.builder().username("test").password("password").build();
         var appRole = new DBAppRole(null, "ROLE_APP_USER");
 
-        appRole = appRolePersistenceService.save(appRole).block();
-        appUser = appUserPersistenceService.save(appUser).block();
+        appRole = appRoleRepository.save(appRole).block();
+        appUser = appUserRepository.save(appUser).block();
         assertThat(appRole).isNotNull();
         assertThat(appUser).isNotNull();
 
@@ -65,8 +67,8 @@ class RoleAppUserPersistenceServiceTest {
         var appUser = DBAppUser.builder().username("test").password("password").build();
         var appRole = new DBAppRole(null, "ROLE_APP_USER");
 
-        appRole = appRolePersistenceService.save(appRole).block();
-        appUser = appUserPersistenceService.save(appUser).block();
+        appRole = appRoleRepository.save(appRole).block();
+        appUser = appUserRepository.save(appUser).block();
         assertThat(appRole).isNotNull();
         assertThat(appUser).isNotNull();
 

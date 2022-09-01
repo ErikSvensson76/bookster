@@ -3,7 +3,6 @@ package com.example.bookster.datasource.service.facade;
 import com.example.bookster.datasource.models.DBContactInfo;
 import com.example.bookster.datasource.repository.ContactInfoRepository;
 import com.example.bookster.datasource.service.mapping.MappingService;
-import com.example.bookster.datasource.service.persistence.ContactInfoPersistenceService;
 import com.example.bookster.graphql.models.dto.ContactInfo;
 import com.example.bookster.graphql.models.input.ContactInfoInput;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,6 @@ import java.util.UUID;
 public class ContactInfoServiceImpl implements ContactInfoService {
 
     private final ContactInfoRepository repository;
-    private final ContactInfoPersistenceService persistenceService;
     private final MappingService mappingService;
 
     @Override
@@ -37,7 +35,7 @@ public class ContactInfoServiceImpl implements ContactInfoService {
                 .flatMap(dbContactInfo -> {
                     Mono<DBContactInfo> dbContactInfoMono;
                     if(dbContactInfo.getId() == null){
-                        dbContactInfoMono = persistenceService.save(dbContactInfo);
+                        dbContactInfoMono = repository.save(dbContactInfo);
                     }else {
                         dbContactInfoMono =  repository.findById(dbContactInfo.getId())
                                 .map(toUpdate -> {
@@ -46,7 +44,7 @@ public class ContactInfoServiceImpl implements ContactInfoService {
                                     toUpdate.setPhone(dbContactInfo.getPhone());
                                     return toUpdate;
                                 })
-                                .flatMap(persistenceService::save);
+                                .flatMap(repository::save);
                     }
                     return dbContactInfoMono;
                 })
