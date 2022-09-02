@@ -77,8 +77,7 @@ class AppUserDBServiceImplTest {
 
     @Test
     void findAll() {
-
-        Flux<DBAppUser> dbAppUsersFlux = Flux.fromStream(Stream.generate(() -> initializeUser().block()).limit(5).parallel())
+        Flux<DBAppUser> dbAppUsersFlux = Flux.fromStream(Stream.generate(() -> initializeUser().block()).limit(5))
                 .thenMany(Flux.from(testObject.findAll()));
 
         final int expected = 5;

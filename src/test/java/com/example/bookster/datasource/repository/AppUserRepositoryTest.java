@@ -49,16 +49,19 @@ class AppUserRepositoryTest {
     @Test
     void findByAppRoleId() {
         assertThat(dbAppUser).isNotNull();
-        DBAppRole dbAppRole = template.insert(DBAppRole.class)
-                .using(new DBAppRole(null, "ROLE_APP_USER")).block();
-        assertThat(dbAppRole).isNotNull();
+        var result = Mono.from(template.insert(new DBAppRole(null, "ROLE_APP_USER")))
+                .zipWith(Mono.just(dbAppUser))
+                .flatMap(tuple -> Mono.from(template.insert(
+                        DBRoleAppUser.builder()
+                                .appUserId(tuple.getT2().getId())
+                                .appRoleId(tuple.getT1().getId())
+                                .build()
+                )))
+                .map(DBRoleAppUser::getAppRoleId)
+                .flatMapMany(uuid -> testObject.findByAppRoleId(uuid));
 
-        template.insert(DBRoleAppUser.class)
-                .using(new DBRoleAppUser(dbAppUser.getId(), dbAppRole.getId()))
-                .subscribe(dbRoleAppUser -> assertThat(dbRoleAppUser).isNotNull());
-
-        StepVerifier.create(testObject.findByAppRoleId(dbAppRole.getId()))
-                .expectNextMatches(user -> user.getId().equals(dbAppUser.getId()))
+        StepVerifier.create(result)
+                .expectNextCount(1)
                 .verifyComplete();
     }
 
