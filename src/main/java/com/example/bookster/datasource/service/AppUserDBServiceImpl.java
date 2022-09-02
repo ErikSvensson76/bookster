@@ -44,31 +44,37 @@ public class AppUserDBServiceImpl implements AppUserDBService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Mono<DBAppUser> findById(Mono<UUID> uuidMono) {
         return uuidMono.flatMap(appUserRepository::findById);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Flux<DBAppUser> findAll() {
         return appUserRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Flux<DBAppUser> findAllByAppRoleId(Mono<UUID> appRoleId) {
         return appRoleId.flatMapMany(appUserRepository::findByAppRoleId);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Mono<DBAppUser> findByUsername(Mono<String> username) {
         return username.flatMap(appUserRepository::findByUsername);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Mono<DBAppUser> findByPatientId(Mono<UUID> patientIdMono) {
         return patientIdMono.flatMap(appUserRepository::findByPatientId);
     }
 
     @Override
+    @Transactional
     public Mono<DBAppUser> update(Mono<DBAppUser> dbAppUserMono) {
         return dbAppUserMono
                 .flatMap(dbAppUser -> Mono.zip(Mono.just(dbAppUser),Mono.from(appUserRepository.findById(Mono.just(dbAppUser.getId())))))
@@ -82,7 +88,21 @@ public class AppUserDBServiceImpl implements AppUserDBService {
     }
 
     @Override
+    @Transactional
     public Mono<Void> delete(Mono<UUID> uuidMono) {
-        return null;
-    }
+        return appRoleDBService.findByAppUserId(uuidMono).map(DBAppRole::getId).collectList()
+                .zipWith(uuidMono)
+                .flatMapMany(tuple -> {
+                    var deleteDBRoleAppUserMono = Flux.fromIterable(tuple.getT1())
+                            .map(appRoleId -> new DBRoleAppUser(tuple.getT2(), appRoleId))
+                            .flatMap(roleAppUserPersistenceService::deleteAppRoleAssignment)
+                            .then();
+
+                    var appUserDeleteMono = appUserRepository.deleteById(tuple.getT2());
+
+                    return deleteDBRoleAppUserMono.then(appUserDeleteMono);
+
+                })
+                .then();
+        }
 }
