@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface AddressDBService {
 
-    Mono<DBAddress> saveOrGet(Mono<DBAddress> dbAddressMono);
+    Mono<DBAddress> save(Mono<DBAddress> dbAddressMono);
 
     Mono<DBAddress> findById(Mono<UUID> idMono);
 

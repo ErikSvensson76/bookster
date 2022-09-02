@@ -5,6 +5,7 @@ import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.data.repository.query.Param;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
@@ -30,5 +31,13 @@ public interface AddressRepository extends R2dbcRepository<DBAddress, UUID> {
     @Modifying
     Mono<Integer> deleteDBAddressById(UUID id);
 
+    @Query("SELECT a.* FROM address a " +
+            "JOIN premises p ON a.pk_address = p.fk_premises_address " +
+            "WHERE p.pk_premises = :premisesId")
+    Flux<DBAddress> findByPremisesId(@Param("premisesId") Mono<UUID> premisesId);
 
+    @Query("SELECT a.* FROM address a " +
+            "JOIN contact_info ci on a.pk_address = ci.fk_user_address " +
+            "WHERE ci.pk_contact_info = :contactInfoId")
+    Flux<DBAddress> findByContactInfoId(Mono<UUID> contactInfoId);
 }

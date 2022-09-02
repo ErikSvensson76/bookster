@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.r2dbc.connection.init.ScriptUtils;
+import org.springframework.test.annotation.DirtiesContext;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -23,6 +24,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 @SpringBootTest
+@DirtiesContext
 class AppUserDBServiceImplTest {
 
     @Value("classpath:/sql/testdb.sql")
@@ -167,6 +169,5 @@ class AppUserDBServiceImplTest {
         StepVerifier.create(result)
                 .expectSubscription()
                 .verifyComplete();
-
     }
 }

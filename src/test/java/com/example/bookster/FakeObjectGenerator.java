@@ -1,7 +1,6 @@
 package com.example.bookster;
 
-import com.example.bookster.datasource.models.DBAppUser;
-import com.example.bookster.datasource.models.DBPatient;
+import com.example.bookster.datasource.models.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import net.datafaker.Faker;
@@ -40,6 +39,24 @@ public class FakeObjectGenerator {
     }
 
 
+    public DBAddress randomDBAddress() {
+        return DBAddress.builder()
+                .street(faker.address().streetAddress())
+                .zipCode(faker.address().zipCode())
+                .city(faker.address().city())
+                .build();
+    }
 
+    public DBPremises randomDBPremises(){
+        return DBPremises.builder()
+                .premisesName("Vårdcentral " + faker.company().name())
+                .build();
+    }
 
+    public DBContactInfo randomDBContactInfo() {
+        return DBContactInfo.builder()
+                .email(faker.internet().emailAddress())
+                .phone(faker.phoneNumber().cellPhone())
+                .build();
+    }
 }
