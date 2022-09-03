@@ -27,24 +27,16 @@ public class ContactInfoDBServiceImpl implements ContactInfoDBService {
     @Override
     @Transactional
     public Mono<DBContactInfo> persist(Mono<DBContactInfo> contactInfoMono, Mono<DBAddress> dbAddressMono) {
-        var foundAddressMono = dbAddressMono
-                .flatMap(dbAddress -> {
-                    var found = addressRepository.findByCityAndStreetAndZipCode(
-                            dbAddress.getCity(), dbAddress.getStreet(), dbAddress.getZipCode()
-                    );
+        var foundAddressMono = Mono.from(dbAddressMono)
+                .flatMap(address -> addressRepository.findByCityAndStreetAndZipCode(address.getCity(), address.getStreet(), address.getZipCode()))
+                .switchIfEmpty(Mono.from(dbAddressMono).flatMap(address -> addressDBService.save(Mono.just(address))));
 
-                    if(found != null){
-                        return found;
-                    }
-
-                    return addressDBService.save(Mono.just(dbAddress));
-                }).map(DBAddress::getId);
-
-
-        return contactInfoMono.zipWith(foundAddressMono)
+        return Mono.from(contactInfoMono)
+                .zipWith(foundAddressMono)
                 .flatMap(tuple2 -> {
-                    tuple2.getT1().setAddressId(tuple2.getT2());
-                    return repository.save(tuple2.getT1());
+                    var contactInfo = tuple2.getT1();
+                    contactInfo.setAddressId(tuple2.getT2().getId());
+                    return repository.save(contactInfo);
                 });
     }
 
