@@ -11,7 +11,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -25,10 +24,10 @@ public class ContactInfoDBServiceImpl implements ContactInfoDBService {
     @Override
     @Transactional
     public Mono<DBContactInfo> persist(Mono<DBContactInfo> contactInfoMono, Mono<DBAddress> dbAddressMono) {
-        var foundAddressMono = Mono.from(dbAddressMono)
+        var foundAddressMono = dbAddressMono
                 .flatMap(address -> addressDBService.save(Mono.just(address)));
 
-        return Mono.from(contactInfoMono)
+        return contactInfoMono
                 .zipWith(foundAddressMono)
                 .flatMap(tuple2 -> {
                     var contactInfo = tuple2.getT1();
@@ -93,20 +92,12 @@ public class ContactInfoDBServiceImpl implements ContactInfoDBService {
     @Override
     @Transactional
     public Mono<Void> delete(Mono<UUID> uuidMono) {
-        var contactInfoMono =  Mono.from(repository.findById(uuidMono));
-        var addressMono = Mono.from(addressDBService.findByContactInfoId(uuidMono).collectList());
-
-        return Mono.zip(contactInfoMono, addressMono)
-                .flatMap(tuple2 -> {
-                    DBContactInfo dbContactInfo = tuple2.getT1();
-                    List<DBAddress> addressList = tuple2.getT2();
-                    Mono<Void> cleanupMono = Mono.empty();
-                    if(addressList.size() == 1){
-                        cleanupMono = Mono.just(addressList.get(0).getId())
-                                .flatMap(uuid -> addressDBService.delete(Mono.just(uuid)));
-                    }
-                    return Mono.zip(repository.deleteById(dbContactInfo.getId()), cleanupMono);
-                })
+        return Mono.from(repository.findById(uuidMono))
+                .flatMap(contactInfo -> Mono.zip(
+                        repository.deleteById(contactInfo.getId()),
+                        addressDBService.delete(Mono.just(contactInfo.getAddressId()))
+                        )
+                )
                 .then();
     }
 }
