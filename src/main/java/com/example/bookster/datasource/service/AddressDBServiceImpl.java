@@ -19,7 +19,9 @@ public class AddressDBServiceImpl implements AddressDBService {
     @Override
     @Transactional
     public Mono<DBAddress> save(final Mono<DBAddress> dbAddressMono) {
-        return dbAddressMono.flatMap(addressRepository::save);
+        return Mono.from(dbAddressMono)
+                .flatMap(address -> addressRepository.findByCityAndStreetAndZipCode(address.getCity(), address.getStreet(), address.getZipCode()))
+                .switchIfEmpty(Mono.from(dbAddressMono.flatMap(addressRepository::save)));
     }
 
     @Override

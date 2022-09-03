@@ -2,7 +2,6 @@ package com.example.bookster.datasource.service;
 
 import com.example.bookster.datasource.models.DBAddress;
 import com.example.bookster.datasource.models.DBContactInfo;
-import com.example.bookster.datasource.repository.AddressRepository;
 import com.example.bookster.datasource.repository.ContactInfoRepository;
 import com.example.bookster.datasource.repository.PremisesRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,15 +20,13 @@ public class ContactInfoDBServiceImpl implements ContactInfoDBService {
 
     private final ContactInfoRepository repository;
     private final PremisesRepository premisesRepository;
-    private final AddressRepository addressRepository;
     private final AddressDBService addressDBService;
 
     @Override
     @Transactional
     public Mono<DBContactInfo> persist(Mono<DBContactInfo> contactInfoMono, Mono<DBAddress> dbAddressMono) {
         var foundAddressMono = Mono.from(dbAddressMono)
-                .flatMap(address -> addressRepository.findByCityAndStreetAndZipCode(address.getCity(), address.getStreet(), address.getZipCode()))
-                .switchIfEmpty(Mono.from(dbAddressMono).flatMap(address -> addressDBService.save(Mono.just(address))));
+                .flatMap(address -> addressDBService.save(Mono.just(address)));
 
         return Mono.from(contactInfoMono)
                 .zipWith(foundAddressMono)
