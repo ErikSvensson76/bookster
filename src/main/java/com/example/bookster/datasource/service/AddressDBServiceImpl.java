@@ -2,6 +2,8 @@ package com.example.bookster.datasource.service;
 
 import com.example.bookster.datasource.models.DBAddress;
 import com.example.bookster.datasource.repository.AddressRepository;
+import com.example.bookster.datasource.repository.ContactInfoRepository;
+import com.example.bookster.datasource.repository.PremisesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,8 @@ import java.util.UUID;
 public class AddressDBServiceImpl implements AddressDBService {
 
     private final AddressRepository addressRepository;
+    private final PremisesRepository premisesRepository;
+    private final ContactInfoRepository contactInfoRepository;
 
     @Override
     @Transactional
@@ -51,6 +55,19 @@ public class AddressDBServiceImpl implements AddressDBService {
     @Override
     @Transactional
     public Mono<Void> delete(Mono<UUID> idMono) {
-        return addressRepository.deleteById(idMono);
+        var premisesCount = Mono.from(idMono)
+                .flatMap(premisesRepository::countAllByAddressId)
+                .switchIfEmpty(Mono.just(0));
+
+
+        var contactInfoCount = Mono.from(idMono)
+                .flatMap(contactInfoRepository::countAllByAddressId)
+                .switchIfEmpty(Mono.just(0));
+
+
+        return Mono.zip(premisesCount, contactInfoCount)
+                .map(tuple2 -> tuple2.getT1() + tuple2.getT2())
+                .zipWith(idMono)
+                .flatMap(tuple2 -> tuple2.getT1() <= 1 ? Mono.from(addressRepository.deleteById(tuple2.getT2())) : Mono.empty());
     }
 }

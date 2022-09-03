@@ -112,6 +112,19 @@ class AddressDBServiceImplTest {
     }
 
     @Test
-    void delete() {
+    void delete_should_delete() {
+        var result = Mono.just(generator.randomDBAddress())
+                .flatMap(template::insert)
+                .flatMap(address -> testObject.delete(Mono.just(address.getId())));
+
+        StepVerifier.create(result)
+                .expectSubscription()
+                .verifyComplete();
+
+
+
+
+
+
     }
 }

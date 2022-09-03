@@ -71,7 +71,7 @@ public class ContactInfoDBServiceImpl implements ContactInfoDBService {
                     if(source.getAddressId() != null && updated.getAddressId() != null && !source.getAddressId().equals(updated.getAddressId())){
                         Mono<UUID> sourceUUIDMono = Mono.just(source.getAddressId());
                         //Assigning a cleanup function to remove old address if usage is less or equal to 1
-                        cleanUp = Mono.zip(repository.countAllByAddressId(Mono.just(source.getAddressId())), premisesRepository.countAllByAddressId(Mono.just(source.getAddressId())))
+                        cleanUp = Mono.zip(repository.countAllByAddressId(source.getAddressId()), premisesRepository.countAllByAddressId(source.getAddressId()))
                                 .map(t2 -> t2.getT1() + t2.getT2())
                                 .zipWith(sourceUUIDMono)
                                 .flatMap(t2 -> {

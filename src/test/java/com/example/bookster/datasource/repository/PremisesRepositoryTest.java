@@ -1,5 +1,7 @@
 package com.example.bookster.datasource.repository;
 
+import com.example.bookster.FakeObjectGenerator;
+import com.example.bookster.datasource.models.DBAddress;
 import com.example.bookster.datasource.models.DBBooking;
 import com.example.bookster.datasource.models.DBPremises;
 import io.r2dbc.spi.ConnectionFactory;
@@ -31,6 +33,8 @@ class PremisesRepositoryTest {
     @Autowired
     PremisesRepository testObject;
 
+    FakeObjectGenerator generator = FakeObjectGenerator.getInstance();
+
     @BeforeEach
     void setUp() {
         Mono.from(connectionFactory.create())
@@ -52,5 +56,24 @@ class PremisesRepositoryTest {
         StepVerifier.create(testObject.findByBookingId(booking.getId()))
                 .expectNextMatches(entity -> entity.getId().equals(booking.getPremisesId()))
                 .verifyComplete();
+    }
+
+    @Test
+    void countAllByAddressId() {
+        var result = Mono.from(template.insert(generator.randomDBAddress()))
+                .map(DBAddress::getId)
+                .map(addressId -> {
+                    var premises = generator.randomDBPremises();
+                    premises.setPremisesAddressId(addressId);
+                    return premises;
+                }).flatMap(template::insert)
+                .flatMap(dbPremises -> testObject.countAllByAddressId(dbPremises.getPremisesAddressId()));
+
+        StepVerifier.create(result)
+                .expectNextMatches(integer -> integer.equals(1))
+                .verifyComplete();
+
+
+
     }
 }
