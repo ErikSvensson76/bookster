@@ -120,11 +120,18 @@ class AddressDBServiceImplTest {
         StepVerifier.create(result)
                 .expectSubscription()
                 .verifyComplete();
+    }
 
+    @Test
+    void delete_should_not_delete() {
+        var deleteMono = Mono.just(generator.randomDBAddress())
+                .flatMap(template::insert)
+                .map(address -> DBPremises.builder().premisesAddressId(address.getId()).build())
+                .flatMap(template::insert)
+                .flatMap(dbPremises -> testObject.delete(Mono.just(dbPremises.getId())));
 
-
-
-
-
+        StepVerifier.create(deleteMono)
+                .expectSubscription()
+                .verifyComplete();
     }
 }
