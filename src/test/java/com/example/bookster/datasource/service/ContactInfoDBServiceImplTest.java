@@ -13,8 +13,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.r2dbc.connection.init.ScriptUtils;
 import org.springframework.test.annotation.DirtiesContext;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+
+import java.util.stream.Stream;
 
 @SpringBootTest
 @DirtiesContext
@@ -44,8 +47,8 @@ class ContactInfoDBServiceImplTest {
                 .block();
     }
 
-    public Mono<DBContactInfo> generateDBContactInfo(){
-        return Mono.just(generator.randomDBContactInfo()).flatMap(template::insert);
+    public DBContactInfo generateDBContactInfo(){
+        return generator.randomDBContactInfo();
     }
 
     @Test
@@ -78,14 +81,29 @@ class ContactInfoDBServiceImplTest {
 
     @Test
     void findAll() {
+        Flux<DBContactInfo> dbContactInfoFlux = Flux.fromStream(Stream.generate(this::generateDBContactInfo).limit(5))
+                .flatMap(template::insert)
+                .thenMany(testObject.findAll());
+
+        StepVerifier.create(dbContactInfoFlux)
+                .expectNextCount(5)
+                .verifyComplete();
     }
 
     @Test
     void findById() {
+        Mono<DBContactInfo> result = Mono.from(template.insert(generateDBContactInfo()))
+                .map(DBContactInfo::getId)
+                .flatMap(uuid -> testObject.findById(Mono.just(uuid)));
+
+        StepVerifier.create(result)
+                .expectNextMatches(dbContactInfo -> dbContactInfo != null && dbContactInfo.getId() != null)
+                .verifyComplete();
     }
 
     @Test
     void findByPatientId() {
+
     }
 
     @Test
