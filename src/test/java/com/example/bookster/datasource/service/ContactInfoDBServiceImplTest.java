@@ -171,18 +171,27 @@ class ContactInfoDBServiceImplTest {
                 .as(StepVerifier::create)
                 .expectNextMatches(Objects::nonNull)
                 .verifyComplete();
-
     }
 
     @Test
-    void delete() {
+    void delete_no_address() {
+        Mono.from(template.insert(generator.randomDBContactInfo()))
+                .map(DBContactInfo::getId)
+                .flatMap(uuid -> testObject.delete(Mono.just(uuid)))
+                .as(StepVerifier::create)
+                .expectSubscription()
+                .verifyComplete();
+    }
+
+    @Test
+    void delete_with_address() {
         DBContactInfo dbContactInfo = new DBContactInfo(null, "test@test.com", "070-5255232", null);
         DBAddress dbAddress = generator.randomDBAddress();
 
         Mono.zip(template.insert(dbAddress), template.insert(dbContactInfo))
                 .map(tuple2 -> {
                     DBContactInfo contactInfo = tuple2.getT2();
-                    contactInfo.setEmail("test1@test.com");
+                    contactInfo.setEmail("test@test.com");
                     contactInfo.setPhone(null);
                     contactInfo.setAddressId(tuple2.getT1().getId());
                     return contactInfo;

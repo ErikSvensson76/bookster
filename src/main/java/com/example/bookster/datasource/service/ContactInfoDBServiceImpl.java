@@ -86,8 +86,12 @@ public class ContactInfoDBServiceImpl implements ContactInfoDBService {
     public Mono<Void> delete(Mono<UUID> uuidMono) {
         return Mono.from(repository.findById(uuidMono))
                 .flatMap(contactInfo -> {
+                    Mono<Void> addressDelete = Mono.empty();
                     UUID addressId = contactInfo.getAddressId();
-                    return addressDBService.delete(Mono.just(addressId))
+                    if(addressId != null){
+                        addressDelete = addressDBService.delete(Mono.just(addressId));
+                    }
+                    return addressDelete
                             .then(repository.deleteById(contactInfo.getId()));
                 });
     }
