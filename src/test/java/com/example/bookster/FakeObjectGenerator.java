@@ -5,10 +5,12 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import net.datafaker.Faker;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -49,7 +51,7 @@ public class FakeObjectGenerator {
 
     public DBPremises randomDBPremises(){
         return DBPremises.builder()
-                .premisesName("Vårdcentral " + faker.company().name())
+                .premisesName(faker.medical().hospitalName())
                 .build();
     }
 
@@ -57,6 +59,15 @@ public class FakeObjectGenerator {
         return DBContactInfo.builder()
                 .email(faker.internet().emailAddress())
                 .phone(faker.phoneNumber().cellPhone())
+                .build();
+    }
+
+    public DBBooking randomDBBooking(){
+        return DBBooking.builder()
+                .vaccineType(faker.medical().diseaseName())
+                .dateTime(faker.date().future(7, 0, TimeUnit.DAYS).toLocalDateTime())
+                .price(BigDecimal.valueOf(faker.number().randomDouble(2, 0, 390)))
+                .vacant(true)
                 .build();
     }
 }
