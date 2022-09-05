@@ -16,9 +16,4 @@ public interface ContactInfoRepository extends R2dbcRepository<DBContactInfo, UU
 
     @Query("SELECT count(fk_user_address) FROM contact_info WHERE fk_user_address = :addressId")
     Mono<Integer> countAllByAddressId(@Param("addressId") UUID addressId);
-
-    @Query("SELECT ci.* FROM contact_info ci " +
-            "JOIN patient p ON ci.pk_contact_info = p.fk_contact_info " +
-            "WHERE p.pk_patient = :patientId")
-    Mono<DBContactInfo> findByPatientId(@Param("patientId") Mono<UUID> patientId);
 }

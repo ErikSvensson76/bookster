@@ -3,13 +3,11 @@ package com.example.bookster.datasource.service;
 import com.example.bookster.datasource.models.DBAddress;
 import com.example.bookster.datasource.models.DBContactInfo;
 import com.example.bookster.datasource.repository.ContactInfoRepository;
-import com.example.bookster.datasource.repository.PremisesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple2;
 
 import java.util.UUID;
 
@@ -18,7 +16,6 @@ import java.util.UUID;
 public class ContactInfoDBServiceImpl implements ContactInfoDBService {
 
     private final ContactInfoRepository repository;
-    private final PremisesRepository premisesRepository;
     private final AddressDBService addressDBService;
 
     @Override
@@ -51,7 +48,7 @@ public class ContactInfoDBServiceImpl implements ContactInfoDBService {
     @Override
     @Transactional(readOnly = true)
     public Mono<DBContactInfo> findByPatientId(Mono<UUID> patientIdMono) {
-        return repository.findByPatientId(patientIdMono);
+        return patientIdMono.flatMap(repository::findByContactInfoByPatientId);
     }
 
     @Override
@@ -70,26 +67,28 @@ public class ContactInfoDBServiceImpl implements ContactInfoDBService {
                     if(source.getAddressId() != null && updated.getAddressId() != null && !source.getAddressId().equals(updated.getAddressId())){
                         Mono<UUID> sourceUUIDMono = Mono.just(source.getAddressId());
                         //Assigning a cleanup function to remove old address if usage is less or equal to 1
-                        cleanUp = addressDBService.delete(sourceUUIDMono);
+                        cleanUp = Mono.from(addressDBService.delete(sourceUUIDMono));
                     }
                     source.setAddressId(updated.getAddressId());
                     source.setEmail(updated.getEmail());
                     source.setPhone(updated.getPhone());
 
-                    return Mono.zip(repository.save(source), cleanUp);
-                })
-                .map(Tuple2::getT1);
+                    return Mono.zip(Mono.just(source), cleanUp)
+                            .flatMap(t2 -> repository.save(t2.getT1()))
+                            //If cleanup didn't run just save source and skip cleanup
+                            .switchIfEmpty(repository.save(source));
+                });
+
     }
 
     @Override
     @Transactional
     public Mono<Void> delete(Mono<UUID> uuidMono) {
         return Mono.from(repository.findById(uuidMono))
-                .flatMap(contactInfo -> Mono.zip(
-                        repository.deleteById(contactInfo.getId()),
-                        addressDBService.delete(Mono.just(contactInfo.getAddressId()))
-                        )
-                )
-                .then();
+                .flatMap(contactInfo -> {
+                    UUID addressId = contactInfo.getAddressId();
+                    return addressDBService.delete(Mono.just(addressId))
+                            .then(repository.deleteById(contactInfo.getId()));
+                });
     }
 }
