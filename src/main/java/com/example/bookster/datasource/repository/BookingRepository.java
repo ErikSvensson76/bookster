@@ -11,9 +11,17 @@ import java.util.UUID;
 public interface BookingRepository extends R2dbcRepository<DBBooking, UUID> {
     Flux<DBBooking> findByPatientId(UUID patientId);
     Flux<DBBooking> findByPremisesId(UUID premisesId);
+    Flux<DBBooking> findAllByVacant(boolean vacant);
+
     @Query("SELECT b.* FROM booking b " +
             "JOIN premises p ON p.pk_premises = b.fk_premises " +
             "JOIN address a ON a.pk_address = p.fk_premises_address " +
             "WHERE lower(a.city) = lower(:city)")
     Flux<DBBooking> findBookingsByCity(@Param("city") String city);
+
+    @Query("SELECT b.* FROM booking b " +
+            "JOIN premises p ON p.pk_premises = b.fk_premises " +
+            "JOIN address a ON a.pk_address = p.fk_premises_address " +
+            "WHERE lower(a.city) = lower(:city) AND b.vacant = :vacant")
+    Flux<DBBooking> findBookingsByCity(@Param("city") String city, @Param("vacant") boolean vacant);
 }
