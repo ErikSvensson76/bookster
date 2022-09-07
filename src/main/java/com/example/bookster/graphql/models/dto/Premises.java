@@ -7,7 +7,6 @@ import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @Builder
@@ -15,7 +14,7 @@ public class Premises implements Serializable {
     private String id;
     private String premisesName;
     @EqualsAndHashCode.Exclude
-    private UUID premisesAddressId;
+    private String premisesAddressId;
     @EqualsAndHashCode.Exclude
     private Address address;
     @EqualsAndHashCode.Exclude
