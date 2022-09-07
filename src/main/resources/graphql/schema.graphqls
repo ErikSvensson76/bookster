@@ -115,7 +115,11 @@ input RoleAppUserInput {
 }
 
 type Query {
-    allAddresses: [Address]
+    patientById(id : ID!) : Patient
+}
+
+type Mutation {
+    createPatient(patientInput: PatientInput!) : Patient
 }
 
 

@@ -8,7 +8,6 @@ import lombok.ToString;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @Builder
@@ -20,9 +19,9 @@ public class Patient implements Serializable {
     private String pnr;
     private Integer age;
     @EqualsAndHashCode.Exclude
-    private UUID contactInfoId;
+    private String contactInfoId;
     @EqualsAndHashCode.Exclude
-    private UUID appUserId;
+    private String appUserId;
     @EqualsAndHashCode.Exclude
     private ContactInfo contactInfo;
     @EqualsAndHashCode.Exclude

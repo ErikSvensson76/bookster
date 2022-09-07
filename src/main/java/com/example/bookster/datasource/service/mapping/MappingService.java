@@ -4,7 +4,14 @@ import com.example.bookster.datasource.models.*;
 import com.example.bookster.graphql.models.dto.*;
 import com.example.bookster.graphql.models.input.*;
 
+import java.util.UUID;
+
 public interface MappingService {
+
+    String convert(UUID uuid);
+
+    UUID convert(String id);
+
     Address convert(DBAddress dbAddress);
 
     DBAddress convert(AddressInput addressInput);

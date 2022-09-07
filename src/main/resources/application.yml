@@ -9,3 +9,6 @@ spring:
       max-size: 60
   profiles:
     active: "dev"
+  graphql:
+    graphiql:
+      enabled: true

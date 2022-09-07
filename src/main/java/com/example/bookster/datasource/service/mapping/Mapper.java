@@ -13,11 +13,13 @@ import java.util.UUID;
 @Component
 public class Mapper implements MappingService {
 
-    private String convert(UUID uuid){
+    @Override
+    public String convert(UUID uuid){
         return uuid == null ? null : uuid.toString();
     }
 
-    private UUID convert(String id){
+    @Override
+    public UUID convert(String id){
         return id == null ? null : UUID.fromString(id);
     }
 
@@ -173,8 +175,8 @@ public class Mapper implements MappingService {
                     .lastName(dbPatient.getLastName())
                     .pnr(dbPatient.getPnr())
                     .age(Period.between(dbPatient.getBirthDate(), LocalDate.now()).getYears())
-                    .appUserId(dbPatient.getAppUserId())
-                    .contactInfoId(dbPatient.getContactInfoId())
+                    .appUserId(convert(dbPatient.getAppUserId()))
+                    .contactInfoId(convert(dbPatient.getContactInfoId()))
                     .build();
         }
         return patient;
