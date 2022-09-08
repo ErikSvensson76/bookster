@@ -144,7 +144,7 @@ public class Mapper implements MappingService {
                     .id(convert(dbContactInfo.getId()))
                     .email(dbContactInfo.getEmail())
                     .phone(dbContactInfo.getPhone())
-                    .addressId(dbContactInfo.getAddressId())
+                    .addressId(convert(dbContactInfo.getAddressId()))
                     .build();
         }
         return contactInfo;
@@ -206,7 +206,7 @@ public class Mapper implements MappingService {
             premises = Premises.builder()
                     .id(convert(dbPremises.getId()))
                     .premisesName(dbPremises.getPremisesName())
-                    .premisesAddressId(dbPremises.getPremisesAddressId())
+                    .premisesAddressId(convert(dbPremises.getPremisesAddressId()))
                     .build();
         }
         return premises;
