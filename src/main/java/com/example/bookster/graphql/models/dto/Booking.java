@@ -7,7 +7,6 @@ import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @Builder
@@ -19,9 +18,9 @@ public class Booking implements Serializable {
     private Boolean vacant;
     private String vaccineType;
     @EqualsAndHashCode.Exclude
-    private UUID patientId;
+    private String patientId;
     @EqualsAndHashCode.Exclude
-    private UUID premisesId;
+    private String premisesId;
     @EqualsAndHashCode.Exclude
     private Patient patient;
     @EqualsAndHashCode.Exclude

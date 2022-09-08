@@ -111,8 +111,8 @@ public class Mapper implements MappingService {
                     .dateTime(dbBooking.getDateTime())
                     .vacant(dbBooking.getVacant())
                     .vaccineType(dbBooking.getVaccineType())
-                    .patientId(dbBooking.getPatientId())
-                    .premisesId(dbBooking.getPremisesId())
+                    .patientId(convert(dbBooking.getPatientId()))
+                    .premisesId(convert(dbBooking.getPremisesId()))
                     .build();
         }
         return booking;

@@ -3,6 +3,7 @@ package com.example.bookster.graphql.controllers;
 import com.example.bookster.graphql.facade.AppUserService;
 import com.example.bookster.graphql.models.dto.AppRole;
 import com.example.bookster.graphql.models.dto.AppUser;
+import com.example.bookster.graphql.models.dto.Patient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.stereotype.Controller;
@@ -37,6 +38,19 @@ public class AppUserController {
                 })
         );
     }
+
+    @BatchMapping(typeName = "Patient", field = "appUser")
+    public Mono<Map<Patient, AppUser>> appUser(final List<Patient> patients){
+        return Flux.fromIterable(patients)
+                .flatMap(patient -> appUserService.findByPatientId(Mono.just(patient.getAppUserId())))
+                .collectMap(appUser -> patients.stream()
+                        .filter(patient -> patient.getContactInfoId().equals(appUser.getId()))
+                        .findFirst()
+                        .orElseThrow()
+                );
+    }
+
+
 
 
 
