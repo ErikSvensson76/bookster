@@ -28,7 +28,7 @@ public class ContactInfoController {
     @BatchMapping(field = "contactInfo", typeName = "ContactInfo")
     Mono<Map<Patient, ContactInfo>> contactInfo(List<Patient> patients){
         return Flux.fromIterable(patients)
-                .flatMap(patient -> contactInfoService.findByPatientId(Mono.just(patient.getContactInfoId().toString())))
+                .flatMap(patient -> contactInfoService.findByPatientId(Mono.just(patient.getContactInfoId())))
                 .collectMap(contactInfo -> patients.stream()
                         .filter(patient -> patient.getContactInfoId().equals(contactInfo.getId()))
                         .findFirst()
