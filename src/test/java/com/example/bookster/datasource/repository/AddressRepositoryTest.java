@@ -1,5 +1,6 @@
 package com.example.bookster.datasource.repository;
 
+import com.example.bookster.FakeObjectGenerator;
 import com.example.bookster.datasource.models.DBAddress;
 import io.r2dbc.spi.ConnectionFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
 import org.springframework.core.io.Resource;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.r2dbc.connection.init.ScriptUtils;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -24,10 +26,15 @@ class AddressRepositoryTest{
     ConnectionFactory connectionFactory;
 
     @Autowired
+    R2dbcEntityTemplate template;
+
+    @Autowired
     AddressRepository testObject;
 
     @Autowired
     AppUserRepository appUserRepository;
+
+    FakeObjectGenerator generator = FakeObjectGenerator.getInstance();
 
     DBAddress dbAddress = DBAddress.builder().street("Test street 1").zipCode("123 45").city("Testville").build();
 
@@ -58,4 +65,20 @@ class AddressRepositoryTest{
                 .expectNextMatches(number -> number == 1)
                 .verifyComplete();
     }
+
+    @Test
+    void getIdFromCityStreetAndZipCode(){
+        Mono.just(generator.randomDBAddress())
+                .flatMap(template::insert)
+                .flatMapMany(dbAddress -> testObject.getIdFromCityStreetAndZipCode(
+                        dbAddress.getCity(),
+                        dbAddress.getStreet(),
+                        dbAddress.getZipCode()
+                ))
+                .as(StepVerifier::create)
+                .expectNextCount(1)
+                .verifyComplete();
+    }
+
+
 }

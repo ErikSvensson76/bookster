@@ -25,7 +25,8 @@ public class AddressDBServiceImpl implements AddressDBService {
     public Mono<DBAddress> save(final Mono<DBAddress> dbAddressMono) {
         return Mono.from(dbAddressMono)
                 .flatMapMany(address -> addressRepository.getIdFromCityStreetAndZipCode(address.getCity(), address.getStreet(), address.getZipCode())).collectList()
-                .flatMap(uuids -> uuids.isEmpty() ? Mono.empty() : addressRepository.findById(uuids.get(0)))
+                .mapNotNull(uuids -> uuids.isEmpty() ? null : uuids.get(0))
+                .flatMap(addressRepository::findById)
                 .switchIfEmpty(dbAddressMono.flatMap(addressRepository::save));
     }
 

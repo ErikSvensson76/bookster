@@ -18,6 +18,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.Objects;
 import java.util.stream.Stream;
 
 @SpringBootTest
@@ -53,6 +54,19 @@ class AddressDBServiceImplTest {
 
         StepVerifier.create(result)
                 .expectNextMatches(obj -> obj != null && obj.getId() != null)
+                .verifyComplete();
+    }
+
+    @Test
+    void save_get_existing_address_instead_of_persisting() {
+        DBAddress dbAddress = generator.randomDBAddress();
+
+        Mono.just(dbAddress)
+                .flatMap(template::insert)
+                .then(Mono.just(dbAddress))
+                .flatMap(address -> testObject.save(Mono.just(address)))
+                .as(StepVerifier::create)
+                .expectNextMatches(Objects::nonNull)
                 .verifyComplete();
     }
 
