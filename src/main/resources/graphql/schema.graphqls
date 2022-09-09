@@ -88,7 +88,7 @@ type Patient {
 
 input PatientInput {
     id: String
-    birthDate: DateTime!
+    birthDate: Date!
     firstName: String!
     lastName: String!
     pnr: String!

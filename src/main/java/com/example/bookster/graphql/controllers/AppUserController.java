@@ -42,9 +42,9 @@ public class AppUserController {
     @BatchMapping(typeName = "Patient", field = "appUser")
     public Mono<Map<Patient, AppUser>> appUser(final List<Patient> patients){
         return Flux.fromIterable(patients)
-                .flatMap(patient -> appUserService.findByPatientId(Mono.just(patient.getAppUserId())))
+                .flatMap(patient -> appUserService.findByPatientId(Mono.just(patient.getId())))
                 .collectMap(appUser -> patients.stream()
-                        .filter(patient -> patient.getContactInfoId().equals(appUser.getId()))
+                        .filter(patient -> patient.getAppUserId().equals(appUser.getId()))
                         .findFirst()
                         .orElseThrow()
                 );

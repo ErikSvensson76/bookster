@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +22,7 @@ public class AddressController {
     @BatchMapping(typeName = "ContactInfo", field = "address")
     public Mono<Map<ContactInfo, Address>> getContactInfoAddress(List<ContactInfo> contactInfos){
         return Flux.fromIterable(contactInfos)
-                .flatMap(contactInfo -> addressService.findByPremisesId(Mono.just(contactInfo.getAddressId())))
+                .flatMap(contactInfo -> addressService.findById(Mono.just(contactInfo.getAddressId())))
                 .collectMap(address -> contactInfos.stream()
                         .filter(contactInfo -> contactInfo.getAddressId().equals(address.getId()))
                         .findFirst()
@@ -34,12 +33,12 @@ public class AddressController {
     @BatchMapping(typeName = "Premises", field = "address")
     public Mono<Map<Premises, Address>> getPremisesAddress(List<Premises> premisesList){
         return Flux.fromIterable(premisesList)
-                .flatMap(premises -> addressService.findByPremisesId(Mono.just(premises.getPremisesAddressId())))
+                .flatMap(premises -> addressService.findById(Mono.just(premises.getId())))
                 .collectMap(address -> premisesList.stream()
                         .filter(premises -> premises.getPremisesAddressId().equals(address.getId()))
                         .findFirst()
                         .orElseThrow()
-                ).onErrorReturn(new HashMap<>());
+                );
     }
 
 }

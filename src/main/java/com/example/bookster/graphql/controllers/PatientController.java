@@ -3,9 +3,11 @@ package com.example.bookster.graphql.controllers;
 import com.example.bookster.graphql.facade.PatientService;
 import com.example.bookster.graphql.models.dto.Booking;
 import com.example.bookster.graphql.models.dto.Patient;
+import com.example.bookster.graphql.models.input.PatientInput;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.BatchMapping;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Flux;
@@ -23,6 +25,11 @@ public class PatientController {
     @QueryMapping
     public Mono<Patient> patientById(@Argument(name = "id") String id){
         return patientService.findById(Mono.just(id));
+    }
+
+    @MutationMapping
+    public Mono<Patient> createPatient(@Argument(name = "patientInput")PatientInput patientInput){
+        return patientService.persist(Mono.just(patientInput));
     }
 
     @BatchMapping(typeName = "Booking", field = "patient")
