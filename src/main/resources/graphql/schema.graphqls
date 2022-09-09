@@ -103,6 +103,10 @@ type Premises {
     bookings: [Booking]
 }
 
+type InfoMessage {
+    message: String
+}
+
 input PremisesInput {
     id: String
     premisesName: String!
@@ -116,10 +120,17 @@ input RoleAppUserInput {
 
 type Query {
     patientById(id : ID!) : Patient
+    patientByBookingId(bookingId: ID!) : Patient
+    patientByUsername(username: String!) : Patient
+    patientsAll : [Patient!]
+    patientsByCity(city: String!) : [Patient!]
+
 }
 
 type Mutation {
     createPatient(patientInput: PatientInput!) : Patient
+    updatePatient(patientInput: PatientInput!) : Patient
+    deletePatient(id: ID!) : InfoMessage
 }
 
 

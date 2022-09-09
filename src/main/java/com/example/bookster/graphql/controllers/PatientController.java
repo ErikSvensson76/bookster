@@ -2,6 +2,7 @@ package com.example.bookster.graphql.controllers;
 
 import com.example.bookster.graphql.facade.PatientService;
 import com.example.bookster.graphql.models.dto.Booking;
+import com.example.bookster.graphql.models.dto.InfoMessage;
 import com.example.bookster.graphql.models.dto.Patient;
 import com.example.bookster.graphql.models.input.PatientInput;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +28,42 @@ public class PatientController {
         return patientService.findById(Mono.just(id));
     }
 
+    @QueryMapping
+    public Mono<Patient> patientByBookingId(@Argument(name = "bookingId") String bookingId){
+        return patientService.findByBookingId(Mono.just(bookingId));
+    }
+
+    @QueryMapping
+    public Mono<Patient> patientByUsername(@Argument(name = "username") String username){
+        return patientService.findByUsername(Mono.just(username));
+    }
+
+    @QueryMapping
+    public Flux<Patient> patientsAll(){
+        return patientService.findAll();
+    }
+
+    @QueryMapping
+    public Flux<Patient> patientsByCity(@Argument(name = "city") String city){
+        return patientService.findByCity(Mono.just(city));
+    }
+
     @MutationMapping
     public Mono<Patient> createPatient(@Argument(name = "patientInput")PatientInput patientInput){
         return patientService.persist(Mono.just(patientInput));
+    }
+
+    @MutationMapping
+    public Mono<Patient> updatePatient(
+            @Argument(name = "patientInput") PatientInput patientInput){
+        return patientService.update(Mono.just(patientInput));
+    }
+
+    @MutationMapping
+    public Mono<InfoMessage> deletePatient(@Argument(name = "id") String id){
+        return patientService.delete(Mono.just(id))
+                .then(Mono.just(id)
+                        .map(stringId -> new InfoMessage("Delete operation completed for Patient with id " + stringId)));
     }
 
     @BatchMapping(typeName = "Booking", field = "patient")
